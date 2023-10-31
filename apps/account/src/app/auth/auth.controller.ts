@@ -12,14 +12,20 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
-  // @Post('register')
-  // async register(@Body() dto: RegisterDTO) {
-  //   return this.authService.register(dto);
-  // }
+  @Post('login')
+  async login(@Body() { email, password }: LoginDTO) {
+    const { id } = await this.authService.validateUser(email, password);
+    return this.authService.login(id);
+  }
 }
 
 export class RegisterDTO {
   email: string;
   password: string;
   displayName?: string;
+}
+
+export class LoginDTO {
+  email: string;
+  password: string;
 }
