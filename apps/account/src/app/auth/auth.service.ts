@@ -1,10 +1,10 @@
 import {Injectable} from '@nestjs/common';
-import {RegisterDTO} from "./auth.controller";
 import {UserRepository} from "../user/repositories/user.repository";
 import {UserEntity} from "../user/entities/user.entity";
 import {UserRole} from "@microservices/interfaces";
 import {User} from "../user/models/user.model";
 import {JwtService} from "@nestjs/jwt";
+import {AccountRegister} from "../../../../../libs/contracts/src";
 
 @Injectable()
 export class AuthService {
@@ -13,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  async register({email, password, displayName}: RegisterDTO) {
+  async register({email, password, displayName}: AccountRegister.Request) {
     const oldUser = await this.userRepository.findUser(email);
     if (oldUser) {
       throw new Error('User already existing');

@@ -1,5 +1,7 @@
-import {Body, Controller, Post} from '@nestjs/common';
+import {Body, Controller} from '@nestjs/common';
 import {AuthService} from "./auth.service";
+import {AccountLogin, AccountRegister} from "../../../../../libs/contracts/src";
+import {RMQRoute, RMQValidate} from "nestjs-rmq";
 
 @Controller('auth')
 export class AuthController {
@@ -7,25 +9,16 @@ export class AuthController {
     private readonly authService: AuthService
   ) {}
 
-  @Post('register')
-  async register(@Body() dto: RegisterDTO) {
+  @RMQValidate()
+  @RMQRoute(AccountRegister.topic)
+  async register(@Body() dto: AccountRegister.Request): Promise<AccountRegister.Response> {
     return this.authService.register(dto);
   }
 
-  @Post('login')
-  async login(@Body() { email, password }: LoginDTO) {
+  @RMQValidate()
+  @RMQRoute(AccountLogin.topic)
+  async login(@Body() { email, password }: AccountLogin.Request): Promise<AccountLogin.Response> {
     const { id } = await this.authService.validateUser(email, password);
     return this.authService.login(id);
   }
-}
-
-export class RegisterDTO {
-  email: string;
-  password: string;
-  displayName?: string;
-}
-
-export class LoginDTO {
-  email: string;
-  password: string;
 }
