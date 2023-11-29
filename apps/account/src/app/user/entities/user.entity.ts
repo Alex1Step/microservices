@@ -1,4 +1,4 @@
-import {IUser, IUserCourses, UserRole} from "@microservices/interfaces";
+import {IUser, IUserCourses, PurchaseState, UserRole} from "@microservices/interfaces";
 import {compare, genSalt, hash} from "bcryptjs";
 
 export class UserEntity implements IUser {
@@ -24,6 +24,31 @@ export class UserEntity implements IUser {
       role: this.role,
       displayName: this.displayName,
     }
+  }
+
+  public addCourse(courseId: string) {
+    const exists = this.courses.find(c => c._id === courseId);
+    if (exists) {
+      throw new Error('This course already in the your courses list');
+    }
+    this.courses.push({
+      courseId,
+      purchaseState: PurchaseState.Started
+    })
+  }
+
+  public deleteCourse(courseId: string) {
+    this.courses = this.courses.filter(c => c._id !== courseId);
+  }
+
+  public updateCourseStatus(courseId: string, state: PurchaseState) {
+    this.courses = this.courses.map(c => {
+      if (c._id === courseId) {
+        c.purchaseState = state;
+        return c;
+      }
+      return c;
+    })
   }
 
   public async setPassword(password: string) {
