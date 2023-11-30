@@ -11,7 +11,7 @@ export class AuthController {
   @Post('register')
   async register(@Body() dto: RegisterDto): Promise<AccountRegister.Response> {
     try {
-      return await this.rmqService.send<AccountRegister.Request, AccountRegister.Response>(AccountRegister.topic, dto);
+      return await this.rmqService.send<AccountRegister.Request, AccountRegister.Response>(AccountRegister.topic, dto, { headers: { requestId: 'unique_identifier_should_be_generated' } });
     } catch (e) {
       if (e instanceof Error) {
         throw new UnauthorizedException(e.message)
