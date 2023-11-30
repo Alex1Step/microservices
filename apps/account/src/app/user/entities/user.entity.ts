@@ -1,5 +1,6 @@
 import {IDomainEvent, IUser, IUserCourses, PurchaseState, UserRole} from "@microservices/interfaces";
 import {compare, genSalt, hash} from "bcryptjs";
+import {AccountChangedCourse} from "../../../../../../libs/contracts/src";
 
 export class UserEntity implements IUser {
   _id?: string;
@@ -8,7 +9,7 @@ export class UserEntity implements IUser {
   passwordHash: string;
   role: UserRole;
   courses?: IUserCourses[];
-  events: IDomainEvent[];
+  events: IDomainEvent[] = [];
 
   constructor(user: IUser) {
     this._id = user._id;
@@ -47,7 +48,7 @@ export class UserEntity implements IUser {
       }
       return c;
     });
-    this.events.push()
+    this.events.push({ topic: AccountChangedCourse.topic, data: { courseId, userId: this._id, state } })
     return this;
   }
 
