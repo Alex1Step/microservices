@@ -1,4 +1,4 @@
-import {IUser, IUserCourses, PurchaseState, UserRole} from "@microservices/interfaces";
+import {IDomainEvent, IUser, IUserCourses, PurchaseState, UserRole} from "@microservices/interfaces";
 import {compare, genSalt, hash} from "bcryptjs";
 
 export class UserEntity implements IUser {
@@ -7,7 +7,8 @@ export class UserEntity implements IUser {
   email: string;
   passwordHash: string;
   role: UserRole;
-  courses?: IUserCourses[]
+  courses?: IUserCourses[];
+  events: IDomainEvent[];
 
   constructor(user: IUser) {
     this._id = user._id;
@@ -26,29 +27,28 @@ export class UserEntity implements IUser {
     }
   }
 
-  public addCourse(courseId: string) {
-    const exists = this.courses.find(c => c._id === courseId);
-    if (exists) {
-      throw new Error('This course already in the your courses list');
+  public setCourseStatus(courseId: string, state: PurchaseState) {
+    const exist = this.courses.find(c => c._id === courseId);
+    if (!exist) {
+      this.courses.push({
+        courseId,
+        purchaseState: state
+      })
+      return this;
     }
-    this.courses.push({
-      courseId,
-      purchaseState: PurchaseState.Started
-    })
-  }
-
-  public deleteCourse(courseId: string) {
-    this.courses = this.courses.filter(c => c._id !== courseId);
-  }
-
-  public updateCourseStatus(courseId: string, state: PurchaseState) {
+    if (state === PurchaseState.Canceled) {
+      this.courses = this.courses.filter(c => c._id !== courseId);
+      return this;
+    }
     this.courses = this.courses.map(c => {
       if (c._id === courseId) {
         c.purchaseState = state;
         return c;
       }
       return c;
-    })
+    });
+    this.events.push()
+    return this;
   }
 
   public async setPassword(password: string) {
