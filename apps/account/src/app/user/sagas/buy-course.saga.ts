@@ -12,7 +12,9 @@ import {
 export class BuyCourseSaga {
   private state: BuyCourseState;
 
-  constructor(public user: UserEntity, public courseId: string, public rmqService: RMQService) {}
+  constructor(public user: UserEntity, public courseId: string, public rmqService: RMQService) {
+    this.setState(user.getCourseState(courseId), courseId);
+  }
   setState(state: PurchaseState, courseId: string) {
     switch (state) {
       case PurchaseState.Started:

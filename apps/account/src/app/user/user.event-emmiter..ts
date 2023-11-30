@@ -2,7 +2,7 @@ import {Injectable} from "@nestjs/common";
 import {RMQService} from "nestjs-rmq";
 import {UserEntity} from "./entities/user.entity";
 
-@Injectable
+@Injectable()
 export class UserEventEmmiter {
   constructor(private readonly rmqService: RMQService) {}
 
