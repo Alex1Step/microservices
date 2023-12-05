@@ -49,7 +49,8 @@ export class AuthService {
 
   async login(id: string) {
     return {
-      access_token: await this.jwtService.signAsync({ id })
+      access_token: await this.jwtService.signAsync({ id }),
+      id
     }
   }
 }

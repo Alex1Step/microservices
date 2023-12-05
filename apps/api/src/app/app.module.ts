@@ -8,6 +8,7 @@ import {getJWTConfig} from "./configs/jwt.config";
 import {PassportModule} from "@nestjs/passport";
 import {UserController} from "./controllers/user.controller";
 import {ScheduleModule} from "@nestjs/schedule";
+import {JwtStrategy} from "./strategies/jwt.strategy";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import {ScheduleModule} from "@nestjs/schedule";
     PassportModule,
     ScheduleModule.forRoot()
   ],
-  controllers: [AuthController, UserController]
+  controllers: [AuthController, UserController],
+  providers: [JwtStrategy]
 })
 export class AppModule {}

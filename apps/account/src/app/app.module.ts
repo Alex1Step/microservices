@@ -7,7 +7,6 @@ import {getMongoConfig} from "./configs/mongo.config";
 import {RMQModule} from "nestjs-rmq";
 import {getRMQConfig} from "./configs/rmq.config";
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: 'envs/.account.env' }),
